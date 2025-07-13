@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seong.mapper.FileMapper">
+
+    <!-- 文件结果映射 -->
+    <resultMap id="FileResultMap" type="com.seong.entity.FileInfo">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="original_name" property="originalName"/>
+        <result column="size" property="size"/>
+        <result column="type" property="type"/>
+        <result column="extension" property="extension"/>
+        <result column="path" property="path"/>
+        <result column="thumbnail_path" property="thumbnailPath"/>
+        <result column="album_id" property="albumId"/>
+        <result column="description" property="description"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+    </resultMap>
+
+    <!-- 插入文件 -->
+    <insert id="insert" parameterType="com.seong.entity.FileInfo">
+        INSERT INTO files (
+            id, name, original_name, size, type, extension, 
+            path, thumbnail_path, album_id, description,
+            created_at, updated_at
+        ) VALUES (
+            #{id}, #{name}, #{originalName}, #{size}, #{type}, #{extension},
+            #{path}, #{thumbnailPath}, #{albumId}, #{description},
+            #{createdAt}, #{updatedAt}
+        )
+    </insert>
+
+    <!-- 根据ID查询文件 -->
+    <select id="selectById" resultMap="FileResultMap">
+        SELECT * FROM files 
+        WHERE id = #{id} AND deleted_at IS NULL
+    </select>
+
+    <!-- 查询文件列表 -->
+    <select id="selectList" resultMap="FileResultMap">
+        SELECT * FROM files
+        <where>
+            deleted_at IS NULL
+            <if test="params.albumId != null and params.albumId != ''">
+                AND album_id = #{params.albumId}
+            </if>
+            <if test="params.search != null and params.search != ''">
+                AND (name LIKE CONCAT('%', #{params.search}, '%') 
+                     OR original_name LIKE CONCAT('%', #{params.search}, '%'))
+            </if>
+        </where>
+        <if test="params.sortBy != null and params.sortBy != ''">
+            ORDER BY ${params.sortBy}
+            <if test="params.sortOrder != null and params.sortOrder != ''">
+                ${params.sortOrder}
+            </if>
+        </if>
+        <if test="params.limit != null">
+            LIMIT #{params.offset}, #{params.limit}
+        </if>
+    </select>
+
+    <!-- 查询文件总数 -->
+    <select id="selectCount" resultType="long">
+        SELECT COUNT(*) FROM files
+        <where>
+            deleted_at IS NULL
+            <if test="params.albumId != null and params.albumId != ''">
+                AND album_id = #{params.albumId}
+            </if>
+            <if test="params.search != null and params.search != ''">
+                AND (name LIKE CONCAT('%', #{params.search}, '%') 
+                     OR original_name LIKE CONCAT('%', #{params.search}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <!-- 更新文件信息 -->
+    <update id="updateById" parameterType="com.seong.entity.FileInfo">
+        UPDATE files
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="albumId != null">album_id = #{albumId},</if>
+            <if test="description != null">description = #{description},</if>
+            updated_at = NOW()
+        </set>
+        WHERE id = #{id} AND deleted_at IS NULL
+    </update>
+
+    <!-- 软删除文件 -->
+    <update id="deleteById">
+        UPDATE files SET deleted_at = NOW() 
+        WHERE id = #{id} AND deleted_at IS NULL
+    </update>
+
+    <!-- 批量软删除文件 -->
+    <update id="deleteBatchByIds">
+        UPDATE files SET deleted_at = NOW() 
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND deleted_at IS NULL
+    </update>
+
+    <!-- 根据相册ID查询文件列表 -->
+    <select id="selectByAlbumId" resultMap="FileResultMap">
+        SELECT * FROM files
+        WHERE album_id = #{albumId} AND deleted_at IS NULL
+        <if test="params.search != null and params.search != ''">
+            AND (name LIKE CONCAT('%', #{params.search}, '%') 
+                 OR original_name LIKE CONCAT('%', #{params.search}, '%'))
+        </if>
+        <if test="params.sortBy != null and params.sortBy != ''">
+            ORDER BY ${params.sortBy}
+            <if test="params.sortOrder != null and params.sortOrder != ''">
+                ${params.sortOrder}
+            </if>
+        </if>
+        <if test="params.limit != null">
+            LIMIT #{params.offset}, #{params.limit}
+        </if>
+    </select>
+
+    <!-- 根据相册ID查询文件总数 -->
+    <select id="selectCountByAlbumId" resultType="long">
+        SELECT COUNT(*) FROM files
+        WHERE album_id = #{albumId} AND deleted_at IS NULL
+        <if test="params.search != null and params.search != ''">
+            AND (name LIKE CONCAT('%', #{params.search}, '%') 
+                 OR original_name LIKE CONCAT('%', #{params.search}, '%'))
+        </if>
+    </select>
+
+    <!-- 更新相册中的文件数量 -->
+    <update id="updatePhotoCountByAlbumId">
+        UPDATE albums 
+        SET photo_count = (
+            SELECT COUNT(*) FROM files 
+            WHERE album_id = #{albumId} AND deleted_at IS NULL
+        )
+        WHERE id = #{albumId}
+    </update>
+
+</mapper> 

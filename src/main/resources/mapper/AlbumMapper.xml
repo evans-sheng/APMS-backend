@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seong.mapper.AlbumMapper">
+
+    <!-- 相册结果映射 -->
+    <resultMap id="AlbumResultMap" type="com.seong.entity.Album">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="cover_photo_id" property="coverPhotoId"/>
+        <result column="photo_count" property="photoCount"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+    </resultMap>
+
+    <!-- 插入相册 -->
+    <insert id="insert" parameterType="com.seong.entity.Album">
+        INSERT INTO albums (
+            id, name, description, cover_photo_id, photo_count,
+            created_at, updated_at
+        ) VALUES (
+            #{id}, #{name}, #{description}, #{coverPhotoId}, #{photoCount},
+            #{createdAt}, #{updatedAt}
+        )
+    </insert>
+
+    <!-- 根据ID查询相册 -->
+    <select id="selectById" resultMap="AlbumResultMap">
+        SELECT * FROM albums 
+        WHERE id = #{id} AND deleted_at IS NULL
+    </select>
+
+    <!-- 查询相册列表 -->
+    <select id="selectList" resultMap="AlbumResultMap">
+        SELECT * FROM albums
+        <where>
+            deleted_at IS NULL
+            <if test="params.search != null and params.search != ''">
+                AND (name LIKE CONCAT('%', #{params.search}, '%') 
+                     OR description LIKE CONCAT('%', #{params.search}, '%'))
+            </if>
+        </where>
+        <if test="params.sortBy != null and params.sortBy != ''">
+            ORDER BY ${params.sortBy}
+            <if test="params.sortOrder != null and params.sortOrder != ''">
+                ${params.sortOrder}
+            </if>
+        </if>
+        <if test="params.limit != null">
+            LIMIT #{params.offset}, #{params.limit}
+        </if>
+    </select>
+
+    <!-- 查询相册总数 -->
+    <select id="selectCount" resultType="long">
+        SELECT COUNT(*) FROM albums
+        <where>
+            deleted_at IS NULL
+            <if test="params.search != null and params.search != ''">
+                AND (name LIKE CONCAT('%', #{params.search}, '%') 
+                     OR description LIKE CONCAT('%', #{params.search}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <!-- 更新相册信息 -->
+    <update id="updateById" parameterType="com.seong.entity.Album">
+        UPDATE albums
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="coverPhotoId != null">cover_photo_id = #{coverPhotoId},</if>
+            <if test="photoCount != null">photo_count = #{photoCount},</if>
+            updated_at = NOW()
+        </set>
+        WHERE id = #{id} AND deleted_at IS NULL
+    </update>
+
+    <!-- 软删除相册 -->
+    <update id="deleteById">
+        UPDATE albums SET deleted_at = NOW() 
+        WHERE id = #{id} AND deleted_at IS NULL
+    </update>
+
+    <!-- 更新相册照片数量 -->
+    <update id="updatePhotoCount">
+        UPDATE albums 
+        SET photo_count = #{photoCount}, updated_at = NOW()
+        WHERE id = #{id} AND deleted_at IS NULL
+    </update>
+
+</mapper> 

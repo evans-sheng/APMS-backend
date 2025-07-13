@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seong.mapper.TagMapper">
+
+    <!-- 标签结果映射 -->
+    <resultMap id="TagResultMap" type="com.seong.entity.Tag">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="color" property="color"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <!-- 插入标签 -->
+    <insert id="insertTag" parameterType="com.seong.entity.Tag">
+        INSERT INTO tags (
+            id, name, color, created_at, updated_at
+        ) VALUES (
+            #{id}, #{name}, #{color}, #{createdAt}, #{updatedAt}
+        )
+    </insert>
+
+    <!-- 根据名称查询标签 -->
+    <select id="selectByName" resultMap="TagResultMap">
+        SELECT * FROM tags WHERE name = #{name}
+    </select>
+
+    <!-- 根据ID查询标签 -->
+    <select id="selectById" resultMap="TagResultMap">
+        SELECT * FROM tags WHERE id = #{id}
+    </select>
+
+    <!-- 查询所有标签 -->
+    <select id="selectAll" resultMap="TagResultMap">
+        SELECT * FROM tags ORDER BY created_at DESC
+    </select>
+
+    <!-- 插入相册标签关联 -->
+    <insert id="insertAlbumTag" parameterType="com.seong.entity.AlbumTag">
+        INSERT INTO album_tags (
+            id, album_id, tag_id, created_at
+        ) VALUES (
+            #{id}, #{albumId}, #{tagId}, #{createdAt}
+        )
+    </insert>
+
+    <!-- 删除相册标签关联 -->
+    <delete id="deleteAlbumTagsByAlbumId">
+        DELETE FROM album_tags WHERE album_id = #{albumId}
+    </delete>
+
+    <!-- 根据相册ID查询标签 -->
+    <select id="selectTagsByAlbumId" resultType="string">
+        SELECT t.name FROM tags t
+        INNER JOIN album_tags at ON t.id = at.tag_id
+        WHERE at.album_id = #{albumId}
+        ORDER BY t.name
+    </select>
+
+    <!-- 插入文件标签关联 -->
+    <insert id="insertFileTag" parameterType="com.seong.entity.FileInfoTag">
+        INSERT INTO file_tags (
+            id, file_id, tag_id, created_at
+        ) VALUES (
+            #{id}, #{fileId}, #{tagId}, #{createdAt}
+        )
+    </insert>
+
+    <!-- 删除文件标签关联 -->
+    <delete id="deleteFileTagsByFileId">
+        DELETE FROM file_tags WHERE file_id = #{fileId}
+    </delete>
+
+    <!-- 根据文件ID查询标签 -->
+    <select id="selectTagsByFileId" resultType="string">
+        SELECT t.name FROM tags t
+        INNER JOIN file_tags ft ON t.id = ft.tag_id
+        WHERE ft.file_id = #{fileId}
+        ORDER BY t.name
+    </select>
+
+</mapper> 
