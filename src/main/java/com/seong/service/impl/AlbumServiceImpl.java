@@ -12,6 +12,7 @@ import com.seong.mapper.AlbumMapper;
 import com.seong.mapper.FileMapper;
 import com.seong.mapper.TagMapper;
 import com.seong.service.AlbumService;
+import com.seong.service.FavoriteAlbumService;
 import com.seong.service.FavoriteFileService;
 import com.seong.utils.UUIDUtils;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class AlbumServiceImpl implements AlbumService {
     private final FileMapper fileMapper;
     private final TagMapper tagMapper;
     private final FavoriteFileService favoriteFileService;
+    private final FavoriteAlbumService favoriteAlbumService;
 
     @Override
     @Transactional
@@ -59,8 +61,8 @@ public class AlbumServiceImpl implements AlbumService {
         if (request.getTags() != null && !request.getTags().isEmpty()) {
             createAlbumTags(album.getId(), request.getTags());
         }
-
-        return getAlbumById(album.getId());
+        Album albumResult = getAlbumById(album.getId());
+        return albumResult;
     }
 
     @Override
@@ -83,6 +85,7 @@ public class AlbumServiceImpl implements AlbumService {
 
         // 设置标签信息
         albums.forEach(this::setAlbumTags);
+        fillAlbumsFavor(albums);
 
         return PageResult.of(albums, total, page, limit);
     }
@@ -96,7 +99,7 @@ public class AlbumServiceImpl implements AlbumService {
 
         // 设置标签信息
         setAlbumTags(album);
-
+        fillAlbumFavor(album);
         return album;
     }
 
@@ -204,6 +207,7 @@ public class AlbumServiceImpl implements AlbumService {
         fillFileFavor(photos);
         // 构建返回结果
         Map<String, Object> result = new HashMap<>();
+        fillAlbumFavor(album);
         result.put("album", album);
         result.put("photos", PageResult.of(sortFiles(photos), total, page, limit));
 
@@ -215,14 +219,16 @@ public class AlbumServiceImpl implements AlbumService {
             return new ArrayList<>();
         }
 
-        // 使用稳定排序：先按收藏、再按是否有描述，最后按更新时间降序
-        Collections.sort(photos, Comparator
-                // 1) 收藏优先（true在前，false在后）
-                .comparing(FileInfo::getIsFavored, Comparator.nullsLast(Boolean::compareTo)).reversed()
-                // 2) 描述非空优先（空值视为最后）
-                .thenComparing(f -> f.getDescription() == null, Comparator.naturalOrder())
-                // 3) 更新时间倒序（null视为最后）
-                .thenComparing(FileInfo::getUpdatedAt, Comparator.nullsLast(Comparator.reverseOrder())));
+        photos.sort(
+                Comparator
+                        // 1. 收藏优先：true -> 0，false -> 1
+                        .comparing((FileInfo f) -> Boolean.TRUE.equals(f.getIsFavored()) ? 0 : 1)
+                        // 2. 有描述优先：空/空白 -> 1，否则 -> 0
+                        .thenComparing(f -> f.getDescription() == null  ? 1 : 0)
+                        // 3. 更新时间倒序，null 视为最旧
+                        .thenComparing(FileInfo::getUpdatedAt,
+                                Comparator.nullsLast(Comparator.reverseOrder()))
+        );
 
         return photos;
     }
@@ -296,6 +302,22 @@ public class AlbumServiceImpl implements AlbumService {
         if (fileInfo.getThumbnailPath() != null) {
 //            fileInfo.setThumbnailUrl("/api/files/" + fileInfo.getId() + "?type=thumbnail");
             fileInfo.setThumbnailUrl("/api/files/" + fileInfo.getId());
+        }
+    }
+
+    private void fillAlbumFavor(Album album){
+        List<String> favoriteIds = favoriteAlbumService.queryAllFavorite();
+        if (favoriteIds.contains(album.getId())){
+            album.setIsFavored(true);
+        }
+    }
+
+    private void fillAlbumsFavor(List<Album> albums) {
+        List<String> favoriteIds = favoriteAlbumService.queryAllFavorite();
+        for (Album album: albums) {
+            if (favoriteIds.contains(album.getId())) {
+                album.setIsFavored(true);
+            }
         }
     }
 } 

@@ -59,4 +59,9 @@ public class Album {
      * 封面照片信息（关联查询时使用）
      */
     private FileInfo coverPhoto;
+
+    /**
+     * 是否被收藏
+     */
+    private Boolean isFavored;
 } 
