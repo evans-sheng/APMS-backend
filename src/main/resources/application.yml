@@ -29,7 +29,7 @@ mybatis:
 # 文件存储配置
 file:
   upload:
-    path: D:\PhotoRepository/uploads/
+    path: D:\PhotoRepository\uploads
     thumbnail-path: D:\PhotoRepository/uploads/thumbnails/
     allowed-extensions: jpg,jpeg,png,gif,webp
     max-size: 10485760

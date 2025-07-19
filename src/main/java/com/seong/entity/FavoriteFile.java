@@ -16,5 +16,5 @@ public class FavoriteFile {
     /**
      * 创建时间（时间戳）
      */
-    private Integer createtime;
+    private String createtime;
 }

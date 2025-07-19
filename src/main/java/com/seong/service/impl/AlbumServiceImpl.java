@@ -12,14 +12,17 @@ import com.seong.mapper.AlbumMapper;
 import com.seong.mapper.FileMapper;
 import com.seong.mapper.TagMapper;
 import com.seong.service.AlbumService;
+import com.seong.service.FavoriteFileService;
 import com.seong.utils.UUIDUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 相册服务实现类
@@ -32,6 +35,7 @@ public class AlbumServiceImpl implements AlbumService {
     private final AlbumMapper albumMapper;
     private final FileMapper fileMapper;
     private final TagMapper tagMapper;
+    private final FavoriteFileService favoriteFileService;
 
     @Override
     @Transactional
@@ -197,13 +201,39 @@ public class AlbumServiceImpl implements AlbumService {
 
         // 设置文件URL
         photos.forEach(this::setFileUrls);
-
+        fillFileFavor(photos);
         // 构建返回结果
         Map<String, Object> result = new HashMap<>();
         result.put("album", album);
-        result.put("photos", PageResult.of(photos, total, page, limit));
+        result.put("photos", PageResult.of(sortFiles(photos), total, page, limit));
 
         return result;
+    }
+
+    private List<FileInfo> sortFiles(List<FileInfo> photos) {
+        if (CollectionUtils.isEmpty(photos)) {
+            return new ArrayList<>();
+        }
+
+        // 使用稳定排序：先按收藏、再按是否有描述，最后按更新时间降序
+        Collections.sort(photos, Comparator
+                // 1) 收藏优先（true在前，false在后）
+                .comparing(FileInfo::getIsFavored, Comparator.nullsLast(Boolean::compareTo)).reversed()
+                // 2) 描述非空优先（空值视为最后）
+                .thenComparing(f -> f.getDescription() == null, Comparator.naturalOrder())
+                // 3) 更新时间倒序（null视为最后）
+                .thenComparing(FileInfo::getUpdatedAt, Comparator.nullsLast(Comparator.reverseOrder())));
+
+        return photos;
+    }
+
+    private void fillFileFavor(List<FileInfo> photos) {
+        List<String> favoriteIds = favoriteFileService.queryAllFavorite();
+        for (FileInfo fileInfo : photos) {
+            if (favoriteIds.contains(fileInfo.getId())) {
+                fileInfo.setIsFavored(true);
+            }
+        }
     }
 
     /**
