@@ -37,7 +37,7 @@
 
 ### 1. 获取文件列表
 
-**接口地址**: `GET /api/files`
+**接口地址**: `GET /api/files/list`
 
 **请求参数**:
 | 参数名 | 类型 | 必填 | 说明 |
@@ -74,7 +74,7 @@
 
 ### 2. 获取单个文件
 
-**接口地址**: `GET /api/files/{fileId}`
+**接口地址**: `GET /api/files/query/{fileId}`
 
 **路径参数**:
 | 参数名 | 类型 | 必填 | 说明 |
@@ -167,7 +167,7 @@
 
 ### 5. 删除文件
 
-**接口地址**: `DELETE /api/files/{fileId}`
+**接口地址**: `DELETE /api/files/delete/{fileId}`
 
 **路径参数**:
 | 参数名 | 类型 | 必填 | 说明 |
@@ -212,7 +212,7 @@
 
 ### 7. 更新文件信息
 
-**接口地址**: `PUT /api/files/{fileId}`
+**接口地址**: `PUT /api/files/update/{fileId}`
 
 **路径参数**:
 | 参数名 | 类型 | 必填 | 说明 |
@@ -247,7 +247,7 @@
 
 ### 8. 获取文件缩略图
 
-**接口地址**: `GET /api/files/{fileId}?type=thumbnail`
+**接口地址**: `GET /api/files/getFile/{fileId}?type=thumbnail`
 
 **路径参数**:
 | 参数名 | 类型 | 必填 | 说明 |
@@ -263,7 +263,7 @@
 
 ### 9. 获取原图
 
-**接口地址**: `GET /api/files/{fileId}?type=original`
+**接口地址**: `GET /api/files/getFile/{fileId}?type=original`
 
 **路径参数**:
 | 参数名 | 类型 | 必填 | 说明 |
@@ -470,6 +470,240 @@
     "page": 1,
     "limit": 20
   }
+}
+```
+
+## 收藏文件管理接口
+
+### 1. 收藏文件
+
+**接口地址**: `POST /api/files/favorite/{fileId}`
+
+**路径参数**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| fileId | string | 是 | 文件ID |
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": true,
+  "message": "收藏成功"
+}
+```
+
+### 2. 取消收藏文件
+
+**接口地址**: `DELETE /api/files/favorite/{fileId}`
+
+**路径参数**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| fileId | string | 是 | 文件ID |
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": true,
+  "message": "取消收藏成功"
+}
+```
+
+## 收藏相册管理接口
+
+### 1. 收藏相册
+
+**接口地址**: `POST /api/files/album/favorite/{albumId}`
+
+**路径参数**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| albumId | string | 是 | 相册ID |
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": true,
+  "message": "收藏成功"
+}
+```
+
+### 2. 取消收藏相册
+
+**接口地址**: `DELETE /api/files/album/favorite/{albumId}`
+
+**路径参数**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| albumId | string | 是 | 相册ID |
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": true,
+  "message": "取消收藏成功"
+}
+```
+
+## 标签管理接口
+
+### 1. 创建标签
+
+**接口地址**: `POST /api/files/tags`
+
+**请求参数**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| name | string | 是 | 标签名称 |
+| description | string | 否 | 标签描述 |
+| color | string | 否 | 标签颜色 |
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "id": "tag_123",
+    "name": "家庭",
+    "description": "家庭相关照片",
+    "color": "#FF5722",
+    "createdAt": "2024-01-01T12:00:00Z",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "message": "标签创建成功"
+}
+```
+
+### 2. 获取标签列表（分页）
+
+**接口地址**: `GET /api/files/tags`
+
+**请求参数**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| page | number | 否 | 页码，默认1 |
+| limit | number | 否 | 每页数量，默认20 |
+| search | string | 否 | 搜索关键词 |
+| sortBy | string | 否 | 排序字段：name, createdAt |
+| sortOrder | string | 否 | 排序方向：asc, desc |
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "list": [
+      {
+        "id": "tag_123",
+        "name": "家庭",
+        "description": "家庭相关照片",
+        "color": "#FF5722",
+        "createdAt": "2024-01-01T12:00:00Z",
+        "updatedAt": "2024-01-01T12:00:00Z"
+      }
+    ],
+    "total": 10,
+    "page": 1,
+    "limit": 20
+  }
+}
+```
+
+### 3. 获取所有标签
+
+**接口地址**: `GET /api/files/tags/all`
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "tag_123",
+      "name": "家庭",
+      "description": "家庭相关照片",
+      "color": "#FF5722",
+      "createdAt": "2024-01-01T12:00:00Z",
+      "updatedAt": "2024-01-01T12:00:00Z"
+    }
+  ]
+}
+```
+
+### 4. 根据ID获取标签信息
+
+**接口地址**: `GET /api/files/tags/{tagId}`
+
+**路径参数**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| tagId | string | 是 | 标签ID |
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "id": "tag_123",
+    "name": "家庭",
+    "description": "家庭相关照片",
+    "color": "#FF5722",
+    "createdAt": "2024-01-01T12:00:00Z",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  }
+}
+```
+
+### 5. 更新标签信息
+
+**接口地址**: `PUT /api/files/tags/{tagId}`
+
+**路径参数**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| tagId | string | 是 | 标签ID |
+
+**请求参数**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| name | string | 否 | 标签名称 |
+| description | string | 否 | 标签描述 |
+| color | string | 否 | 标签颜色 |
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": {
+    "id": "tag_123",
+    "name": "更新后的标签名",
+    "description": "更新后的描述",
+    "color": "#2196F3",
+    "updatedAt": "2024-01-01T12:00:00Z"
+  },
+  "message": "标签更新成功"
+}
+```
+
+### 6. 删除标签
+
+**接口地址**: `DELETE /api/files/tags/{tagId}`
+
+**路径参数**:
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| tagId | string | 是 | 标签ID |
+
+**响应示例**:
+```json
+{
+  "success": true,
+  "data": true,
+  "message": "标签删除成功"
 }
 ```
 
