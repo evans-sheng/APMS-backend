@@ -189,6 +189,10 @@ public class AlbumServiceImpl implements AlbumService {
 
         // 查询照片数据
         List<FileInfo> photos = fileMapper.selectList(params);
+        for (FileInfo fileInfo: photos) {
+            List<String> tags = tagMapper.selectTagsByFileId(fileInfo.getId());
+            fileInfo.setTags(tags);
+        }
         long total = fileMapper.selectCount(params);
 
         // 设置文件URL

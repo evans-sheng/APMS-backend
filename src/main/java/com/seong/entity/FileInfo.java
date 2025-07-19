@@ -89,4 +89,9 @@ public class FileInfo {
      * 缩略图URL（业务字段，不存储到数据库）
      */
     private String thumbnailUrl;
+
+    /**
+     * 是否被收藏
+     */
+    private Boolean isFavored;
 } 

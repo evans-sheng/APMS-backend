@@ -9,6 +9,7 @@ import com.seong.entity.FileInfoTag;
 import com.seong.entity.Tag;
 import com.seong.mapper.FileMapper;
 import com.seong.mapper.TagMapper;
+import com.seong.service.FavoriteFileService;
 import com.seong.service.FileService;
 import com.seong.utils.FileUtils;
 import com.seong.utils.ThumbnailUtils;
@@ -37,6 +38,7 @@ public class FileServiceImpl implements FileService {
     private final FileMapper fileMapper;
     private final TagMapper tagMapper;
     private final FileConfig fileConfig;
+    private final FavoriteFileService favoriteFileService;
 
     @Override
     @Transactional
@@ -142,10 +144,15 @@ public class FileServiceImpl implements FileService {
 
         // 查询数据
         List<FileInfo> fileInfos = fileMapper.selectList(params);
+        for (FileInfo fileInfo: fileInfos) {
+            List<String> tags = tagMapper.selectTagsByFileId(fileInfo.getId());
+            fileInfo.setTags(tags);
+        }
         long total = fileMapper.selectCount(params);
 
         // 设置文件URL
         fileInfos.forEach(this::setFileUrls);
+        fillFileFavor(fileInfos);
 
         return PageResult.of(fileInfos, total, page, limit);
     }
@@ -163,8 +170,24 @@ public class FileServiceImpl implements FileService {
         // 查询标签
         List<String> tags = tagMapper.selectTagsByFileId(fileId);
         fileInfo.setTags(tags);
-
+        fillFileFavor(fileInfo);
         return fileInfo;
+    }
+
+    private void fillFileFavor(FileInfo fileInfo){
+        List<String> favoriteIds = favoriteFileService.queryAllFavorite();
+        if (favoriteIds.contains(fileInfo.getId())){
+            fileInfo.setIsFavored(true);
+        }
+    }
+
+    private void fillFileFavor(List<FileInfo> fileInfos){
+        List<String> favoriteIds = favoriteFileService.queryAllFavorite();
+        for (FileInfo fileInfo: fileInfos) {
+            if (favoriteIds.contains(fileInfo.getId())){
+                fileInfo.setIsFavored(true);
+            }
+        }
     }
 
     @Override
@@ -318,7 +341,9 @@ public class FileServiceImpl implements FileService {
      * 设置文件URL
      */
     private void setFileUrls(FileInfo fileInfo) {
-        if (fileInfo == null) return;
+        if (fileInfo == null) {
+            return;
+        }
         
         // 这里可以根据实际需求设置文件访问URL
         fileInfo.setUrl("/api/files/" + fileInfo.getId());

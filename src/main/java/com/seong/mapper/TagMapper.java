@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 标签Mapper接口
@@ -33,6 +34,36 @@ public interface TagMapper {
      * 查询所有标签
      */
     List<Tag> selectAll();
+    
+    /**
+     * 分页查询标签列表
+     */
+    List<Tag> selectList(@Param("params") Map<String, Object> params);
+    
+    /**
+     * 查询标签总数
+     */
+    long selectCount(@Param("params") Map<String, Object> params);
+    
+    /**
+     * 更新标签信息
+     */
+    int updateTag(Tag tag);
+    
+    /**
+     * 删除标签
+     */
+    int deleteTag(@Param("id") String id);
+    
+    /**
+     * 检查标签是否被相册使用
+     */
+    int checkTagUsageInAlbums(@Param("tagId") String tagId);
+    
+    /**
+     * 检查标签是否被文件使用
+     */
+    int checkTagUsageInFiles(@Param("tagId") String tagId);
     
     /**
      * 插入相册标签关联
