@@ -1,6 +1,7 @@
 package com.seong.utils;
 
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,12 +14,12 @@ import java.util.List;
  * 文件操作工具类
  */
 public class FileUtils {
-    
+
     /**
      * 支持的图片格式
      */
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png", "gif", "webp");
-    
+
     /**
      * 获取文件扩展名
      */
@@ -28,7 +29,7 @@ public class FileUtils {
         }
         return filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
     }
-    
+
     /**
      * 检查文件类型是否允许
      */
@@ -36,14 +37,14 @@ public class FileUtils {
         String extension = getFileExtension(filename);
         return ALLOWED_EXTENSIONS.contains(extension);
     }
-    
+
     /**
      * 检查文件大小是否允许
      */
     public static boolean isAllowedFileSize(long fileSize, long maxSize) {
         return fileSize <= maxSize;
     }
-    
+
     /**
      * 生成文件存储路径
      */
@@ -52,7 +53,7 @@ public class FileUtils {
         String uuid = UUIDUtils.generateShortUUID();
         return uploadPath + File.separator + uuid + "." + extension;
     }
-    
+
     /**
      * 保存文件
      */
@@ -63,7 +64,7 @@ public class FileUtils {
         // 保存文件
         file.transferTo(path.toFile());
     }
-    
+
     /**
      * 删除文件
      */
@@ -75,7 +76,7 @@ public class FileUtils {
             return false;
         }
     }
-    
+
     /**
      * 检查目录是否存在，不存在则创建
      */
@@ -85,7 +86,7 @@ public class FileUtils {
             Files.createDirectories(path);
         }
     }
-    
+
     /**
      * 获取MIME类型
      */

@@ -17,7 +17,7 @@ import javax.validation.ConstraintViolationException;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     /**
      * 业务异常处理
      */
@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         log.warn("业务异常: {}", e.getMessage());
         return Result.error(e.getMessage(), e.getCode());
     }
-    
+
     /**
      * 参数校验异常处理
      */
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
         log.warn("参数校验异常: {}", message);
         return Result.error(message, "VALIDATION_ERROR");
     }
-    
+
     /**
      * 约束违反异常处理
      */
@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
         log.warn("约束违反异常: {}", e.getMessage());
         return Result.error(e.getMessage(), "CONSTRAINT_VIOLATION");
     }
-    
+
     /**
      * 文件上传大小超限异常处理
      */
@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
         log.warn("文件上传大小超限: {}", e.getMessage());
         return Result.error("文件大小超过限制", "FILE_SIZE_EXCEEDED");
     }
-    
+
     /**
      * 通用异常处理
      */

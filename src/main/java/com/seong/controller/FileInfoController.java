@@ -26,17 +26,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class FileInfoController {
-
     private final FileService fileService;
 
     /**
      * 获取文件列表
      */
     @GetMapping("/list")
-    public Result<Map<String, Object>> getFileList(@RequestParam(defaultValue = "1") Integer page,
-        @RequestParam(defaultValue = "20") Integer limit, @RequestParam(required = false) String albumId,
-        @RequestParam(required = false) String search, @RequestParam(required = false) String sortBy,
-        @RequestParam(defaultValue = "desc") String sortOrder) {
+    public Result<Map<String, Object>> getFileList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "20") Integer limit, @RequestParam(required = false) String albumId, @RequestParam(required = false) String search, @RequestParam(required = false) String sortBy, @RequestParam(defaultValue = "desc") String sortOrder) {
 
         PageResult<FileInfo> pageResult = fileService.getFileList(page, limit, albumId, search, sortBy, sortOrder);
         Map<String, Object> data = new HashMap<>();
@@ -61,7 +57,6 @@ public class FileInfoController {
      */
     @PostMapping("/upload")
     public Result<FileInfo> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam(required = false) String albumId) {
-
         FileInfo uploadedFileInfo = fileService.uploadFile(file, albumId);
         return Result.success(uploadedFileInfo, "文件上传成功");
     }
@@ -70,9 +65,7 @@ public class FileInfoController {
      * 批量上传文件
      */
     @PostMapping("/upload/batch")
-    public Result<Map<String, Object>> uploadBatchFiles(@RequestParam("files") MultipartFile[] files,
-        @RequestParam(required = false) String albumId) {
-
+    public Result<Map<String, Object>> uploadBatchFiles(@RequestParam("files") MultipartFile[] files, @RequestParam(required = false) String albumId) {
         Map<String, Object> result = fileService.uploadBatchFiles(files, albumId);
         return Result.success(result, "批量上传完成");
     }

@@ -1,6 +1,7 @@
 package com.seong.dto.request;
 
 import lombok.Data;
+
 import javax.validation.constraints.Pattern;
 
 /**
@@ -8,12 +9,12 @@ import javax.validation.constraints.Pattern;
  */
 @Data
 public class TagUpdateRequest {
-    
+
     /**
      * 标签名称
      */
     private String name;
-    
+
     /**
      * 标签颜色，十六进制格式
      */

@@ -5,12 +5,12 @@
     <!-- 收藏文件结果映射 -->
     <resultMap id="FavoriteFileResultMap" type="com.seong.entity.FavoriteFile">
         <result column="fileId" property="fileId"/>
-        <result column="createtime" property="createtime"/>
+        <result column="createTime" property="createTime"/>
     </resultMap>
 
     <!-- 插入收藏记录 -->
     <insert id="insert" parameterType="com.seong.entity.FavoriteFile">
-        INSERT INTO favorite_file (fileId, createtime) 
+        INSERT INTO favorite_file (fileId, createTime)
         VALUES (#{fileId}, NOW())
     </insert>
 
@@ -22,7 +22,7 @@
 
     <!-- 根据文件ID查询收藏记录 -->
     <select id="selectByFileId" resultMap="FavoriteFileResultMap">
-        SELECT fileId, createtime 
+        SELECT fileId, createTime
         FROM favorite_file 
         WHERE fileId = #{fileId}
     </select>

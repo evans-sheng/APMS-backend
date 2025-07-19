@@ -40,13 +40,8 @@ public class AlbumController {
      * 获取相册列表
      */
     @GetMapping("/albums")
-    public Result<PageResult<Album>> getAlbumList(
-            @RequestParam(defaultValue = "1") @Min(1) Integer page,
-            @RequestParam(defaultValue = "20") @Min(1) Integer limit,
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String sortOrder) {
-        
+    public Result<PageResult<Album>> getAlbumList(@RequestParam(defaultValue = "1") @Min(1) Integer page, @RequestParam(defaultValue = "20") @Min(1) Integer limit, @RequestParam(required = false) String search, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder) {
+
         PageResult<Album> result = albumService.getAlbumList(page, limit, search, sortBy, sortOrder);
         return Result.success(result);
     }
@@ -64,10 +59,8 @@ public class AlbumController {
      * 更新相册信息
      */
     @PutMapping("/albums/{albumId}")
-    public Result<Album> updateAlbum(
-            @PathVariable @NotBlank String albumId,
-            @Valid @RequestBody AlbumUpdateRequest request) {
-        
+    public Result<Album> updateAlbum(@PathVariable @NotBlank String albumId, @Valid @RequestBody AlbumUpdateRequest request) {
+
         Album album = albumService.updateAlbum(albumId, request);
         return Result.success(album);
     }
@@ -85,14 +78,7 @@ public class AlbumController {
      * 获取相册中的照片
      */
     @GetMapping("/albums/{albumId}/photos")
-    public Result<Map<String, Object>> getAlbumPhotos(
-            @PathVariable @NotBlank String albumId,
-            @RequestParam(defaultValue = "1") @Min(1) Integer page,
-            @RequestParam(defaultValue = "20") @Min(1) Integer limit,
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String sortOrder) {
-        
+    public Result<Map<String, Object>> getAlbumPhotos(@PathVariable @NotBlank String albumId, @RequestParam(defaultValue = "1") @Min(1) Integer page, @RequestParam(defaultValue = "20") @Min(1) Integer limit, @RequestParam(required = false) String search, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder) {
         Map<String, Object> result = albumService.getAlbumPhotos(albumId, page, limit, search, sortBy, sortOrder);
         return Result.success(result);
     }

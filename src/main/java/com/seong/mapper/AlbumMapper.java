@@ -12,37 +12,37 @@ import java.util.Map;
  */
 @Mapper
 public interface AlbumMapper {
-    
+
     /**
      * 插入相册
      */
     int insert(Album album);
-    
+
     /**
      * 根据ID查询相册
      */
     Album selectById(@Param("id") String id);
-    
+
     /**
      * 查询相册列表
      */
     List<Album> selectList(@Param("params") Map<String, Object> params);
-    
+
     /**
      * 查询相册总数
      */
     long selectCount(@Param("params") Map<String, Object> params);
-    
+
     /**
      * 更新相册信息
      */
     int updateById(Album album);
-    
+
     /**
      * 软删除相册
      */
     int deleteById(@Param("id") String id);
-    
+
     /**
      * 更新相册照片数量
      */

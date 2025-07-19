@@ -40,13 +40,8 @@ public class TagController {
      * 获取标签列表（分页）
      */
     @GetMapping
-    public Result<PageResult<Tag>> getTagList(
-            @RequestParam(defaultValue = "1") @Min(1) Integer page,
-            @RequestParam(defaultValue = "20") @Min(1) Integer limit,
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String sortOrder) {
-        
+    public Result<PageResult<Tag>> getTagList(@RequestParam(defaultValue = "1") @Min(1) Integer page, @RequestParam(defaultValue = "20") @Min(1) Integer limit, @RequestParam(required = false) String search, @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder) {
+
         PageResult<Tag> result = tagService.getTagList(page, limit, search, sortBy, sortOrder);
         return Result.success(result);
     }
@@ -73,10 +68,7 @@ public class TagController {
      * 更新标签信息
      */
     @PutMapping("/{tagId}")
-    public Result<Tag> updateTag(
-            @PathVariable @NotBlank String tagId,
-            @Valid @RequestBody TagUpdateRequest request) {
-        
+    public Result<Tag> updateTag(@PathVariable @NotBlank String tagId, @Valid @RequestBody TagUpdateRequest request) {
         Tag tag = tagService.updateTag(tagId, request);
         return Result.success(tag, "标签更新成功");
     }

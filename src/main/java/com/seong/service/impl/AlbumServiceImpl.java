@@ -66,8 +66,8 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public PageResult<Album> getAlbumList(Integer page, Integer limit, String search, 
-                                         String sortBy, String sortOrder) {
+    public PageResult<Album> getAlbumList(Integer page, Integer limit, String search,
+                                          String sortBy, String sortOrder) {
         // 计算偏移量
         int offset = (page - 1) * limit;
 
@@ -174,8 +174,8 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public Map<String, Object> getAlbumPhotos(String albumId, Integer page, Integer limit, 
-                                             String search, String sortBy, String sortOrder) {
+    public Map<String, Object> getAlbumPhotos(String albumId, Integer page, Integer limit,
+                                              String search, String sortBy, String sortOrder) {
         // 验证相册是否存在
         Album album = albumMapper.selectById(albumId);
         if (album == null) {
@@ -196,7 +196,7 @@ public class AlbumServiceImpl implements AlbumService {
 
         // 查询照片数据
         List<FileInfo> photos = fileMapper.selectList(params);
-        for (FileInfo fileInfo: photos) {
+        for (FileInfo fileInfo : photos) {
             List<String> tags = tagMapper.selectTagsByFileId(fileInfo.getId());
             fileInfo.setTags(tags);
         }
@@ -224,7 +224,7 @@ public class AlbumServiceImpl implements AlbumService {
                         // 1. 收藏优先：true -> 0，false -> 1
                         .comparing((FileInfo f) -> Boolean.TRUE.equals(f.getIsFavored()) ? 0 : 1)
                         // 2. 有描述优先：空/空白 -> 1，否则 -> 0
-                        .thenComparing(f -> f.getDescription() == null  ? 1 : 0)
+                        .thenComparing(f -> f.getDescription() == null ? 1 : 0)
                         // 3. 更新时间倒序，null 视为最旧
                         .thenComparing(FileInfo::getUpdatedAt,
                                 Comparator.nullsLast(Comparator.reverseOrder()))
@@ -287,7 +287,7 @@ public class AlbumServiceImpl implements AlbumService {
      */
     private void setAlbumTags(Album album) {
         if (album == null) return;
-        
+
         List<String> tags = tagMapper.selectTagsByAlbumId(album.getId());
         album.setTags(tags);
     }
@@ -297,7 +297,7 @@ public class AlbumServiceImpl implements AlbumService {
      */
     private void setFileUrls(FileInfo fileInfo) {
         if (fileInfo == null) return;
-        
+
         fileInfo.setUrl("/api/files/" + fileInfo.getId());
         if (fileInfo.getThumbnailPath() != null) {
 //            fileInfo.setThumbnailUrl("/api/files/" + fileInfo.getId() + "?type=thumbnail");
@@ -305,16 +305,16 @@ public class AlbumServiceImpl implements AlbumService {
         }
     }
 
-    private void fillAlbumFavor(Album album){
+    private void fillAlbumFavor(Album album) {
         List<String> favoriteIds = favoriteAlbumService.queryAllFavorite();
-        if (favoriteIds.contains(album.getId())){
+        if (favoriteIds.contains(album.getId())) {
             album.setIsFavored(true);
         }
     }
 
     private void fillAlbumsFavor(List<Album> albums) {
         List<String> favoriteIds = favoriteAlbumService.queryAllFavorite();
-        for (Album album: albums) {
+        for (Album album : albums) {
             if (favoriteIds.contains(album.getId())) {
                 album.setIsFavored(true);
             }

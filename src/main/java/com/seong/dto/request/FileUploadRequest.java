@@ -10,13 +10,13 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class FileUploadRequest {
-    
+
     /**
      * 上传的文件
      */
     @NotNull(message = "文件不能为空")
     private MultipartFile file;
-    
+
     /**
      * 相册ID
      */

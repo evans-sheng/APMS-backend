@@ -52,7 +52,7 @@ public class FileServiceImpl implements FileService {
             String originalName = file.getOriginalFilename();
             String extension = FileUtils.getFileExtension(originalName);
             String fileName = UUIDUtils.generateShortUUID() + "." + extension;
-            
+
             // 生成存储路径
             String filePath = fileConfig.getPath() + fileName;
             String thumbnailPath = fileConfig.getThumbnailPath() + fileName;
@@ -129,7 +129,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public PageResult<FileInfo> getFileList(Integer page, Integer limit, String albumId,
-                                       String search, String sortBy, String sortOrder) {
+                                            String search, String sortBy, String sortOrder) {
         // 计算偏移量
         int offset = (page - 1) * limit;
 
@@ -144,7 +144,7 @@ public class FileServiceImpl implements FileService {
 
         // 查询数据
         List<FileInfo> fileInfos = fileMapper.selectList(params);
-        for (FileInfo fileInfo: fileInfos) {
+        for (FileInfo fileInfo : fileInfos) {
             List<String> tags = tagMapper.selectTagsByFileId(fileInfo.getId());
             fileInfo.setTags(tags);
         }
@@ -174,17 +174,17 @@ public class FileServiceImpl implements FileService {
         return fileInfo;
     }
 
-    private void fillFileFavor(FileInfo fileInfo){
+    private void fillFileFavor(FileInfo fileInfo) {
         List<String> favoriteIds = favoriteFileService.queryAllFavorite();
-        if (favoriteIds.contains(fileInfo.getId())){
+        if (favoriteIds.contains(fileInfo.getId())) {
             fileInfo.setIsFavored(true);
         }
     }
 
-    private void fillFileFavor(List<FileInfo> fileInfos){
+    private void fillFileFavor(List<FileInfo> fileInfos) {
         List<String> favoriteIds = favoriteFileService.queryAllFavorite();
-        for (FileInfo fileInfo: fileInfos) {
-            if (favoriteIds.contains(fileInfo.getId())){
+        for (FileInfo fileInfo : fileInfos) {
+            if (favoriteIds.contains(fileInfo.getId())) {
                 fileInfo.setIsFavored(true);
             }
         }
@@ -344,7 +344,7 @@ public class FileServiceImpl implements FileService {
         if (fileInfo == null) {
             return;
         }
-        
+
         // 这里可以根据实际需求设置文件访问URL
         fileInfo.setUrl("/api/files/" + fileInfo.getId());
         if (fileInfo.getThumbnailPath() != null) {

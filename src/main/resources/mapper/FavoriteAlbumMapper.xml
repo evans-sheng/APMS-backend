@@ -22,7 +22,7 @@
 
     <!-- 根据文件ID查询收藏记录 -->
     <select id="selectByAlbumId" resultMap="FavoriteAlbumResultMap">
-        SELECT albumId, createtime
+        SELECT albumId, createTime
         FROM favorite_album
         WHERE albumId = #{albumId}
     </select>

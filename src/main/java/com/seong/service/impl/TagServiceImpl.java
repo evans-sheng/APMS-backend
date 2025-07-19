@@ -56,8 +56,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public PageResult<Tag> getTagList(Integer page, Integer limit, String search, 
-                                     String sortBy, String sortOrder) {
+    public PageResult<Tag> getTagList(Integer page, Integer limit, String search,
+                                      String sortBy, String sortOrder) {
         // 计算偏移量
         int offset = (page - 1) * limit;
 

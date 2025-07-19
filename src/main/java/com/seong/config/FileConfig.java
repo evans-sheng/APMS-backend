@@ -16,32 +16,32 @@ import java.nio.file.Paths;
 @Component
 @ConfigurationProperties(prefix = "file.upload")
 public class FileConfig {
-    
+
     /**
      * 上传路径
      */
     private String path;
-    
+
     /**
      * 缩略图路径
      */
     private String thumbnailPath;
-    
+
     /**
      * 允许的扩展名
      */
     private String allowedExtensions;
-    
+
     /**
      * 最大文件大小
      */
     private Long maxSize;
-    
+
     /**
      * 缩略图大小
      */
     private Integer thumbnailSize;
-    
+
     /**
      * 初始化创建目录
      */

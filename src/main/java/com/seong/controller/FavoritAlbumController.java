@@ -2,7 +2,6 @@ package com.seong.controller;
 
 import com.seong.common.Result;
 import com.seong.service.FavoriteAlbumService;
-import com.seong.service.FavoriteFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

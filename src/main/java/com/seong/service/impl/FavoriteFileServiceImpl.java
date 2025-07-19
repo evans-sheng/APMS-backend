@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FavoriteFileServiceImpl implements FavoriteFileService {
-    
+
     private final FavoriteFileMapper favoriteFileMapper;
-    
+
     /**
      * 添加收藏
      */
@@ -30,14 +30,14 @@ public class FavoriteFileServiceImpl implements FavoriteFileService {
         if (existing != null) {
             return false;
         }
-        
+
         // 创建收藏记录
         FavoriteFile favoriteFile = new FavoriteFile();
         favoriteFile.setFileId(fileId);
         int result = favoriteFileMapper.insert(favoriteFile);
         return result > 0;
     }
-    
+
     /**
      * 取消收藏
      */

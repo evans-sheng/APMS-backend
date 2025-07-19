@@ -11,17 +11,17 @@ import java.util.List;
  */
 @Mapper
 public interface FavoriteFileMapper {
-    
+
     /**
      * 插入收藏记录
      */
     int insert(FavoriteFile favoriteFile);
-    
+
     /**
      * 根据文件ID删除收藏记录
      */
     int deleteByFileId(@Param("fileId") String fileId);
-    
+
     /**
      * 根据文件ID查询收藏记录
      */

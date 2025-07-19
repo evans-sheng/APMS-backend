@@ -1,6 +1,7 @@
 package com.seong.dto.request;
 
 import lombok.Data;
+
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 
@@ -9,18 +10,18 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 public class AlbumCreateRequest {
-    
+
     /**
      * 相册名称
      */
     @NotBlank(message = "相册名称不能为空")
     private String name;
-    
+
     /**
      * 相册描述
      */
     private String description;
-    
+
     /**
      * 标签数组
      */

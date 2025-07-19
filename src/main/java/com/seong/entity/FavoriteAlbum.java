@@ -7,12 +7,12 @@ import lombok.Data;
  */
 @Data
 public class FavoriteAlbum {
-    
+
     /**
      * 文件ID
      */
     private String albumId;
-    
+
     /**
      * 创建时间（时间戳）
      */
